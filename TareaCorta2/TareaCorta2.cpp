@@ -1,12 +1,30 @@
-// TareaCorta2.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include "pch.h"
 #include <iostream>
+#include "ListaSimple.h"
 
-int main()
-{
-    std::cout << "Hello World!\n"; 
+int main() {
+
+	List<int> lm("Lista1");
+
+	lm.push_front(30);
+	lm.push_front(20);
+	lm.push_front(10);
+	lm.push_back(40);
+	lm.insertarR(5, 0);
+	lm.insertarR(8, 1);
+	lm.insertarR(15, 5);
+	lm.insertarR(50, 99);
+	lm.insertarR(999, 1);
+	lm.print();
+	std::cout << "\n";
+	List<string> la("Personas");
+	la.push_back("ana");
+	la.push_back("juan");
+	la.print();
+	std::cout << "\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
