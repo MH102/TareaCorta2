@@ -108,13 +108,44 @@ void List<T>::insertarR(T x, int pos) {
 template<class T>
 bool List<T>::remove(int pos, T & x)
 {
+	if (tam==0) {
+		return;
+	}
+	else {
+		link p;
+		if (pos == 0)
+			p = primero;
+			primero = primero->siguiente;
+			delete(p);
+			tam--;
+			return true;
+		else {
+			p = primero;
+			while (p->siguiente && pos > 1) {
+				p = p->siguiente;
+				pos--;
+			}
+			link aux = p->siguiente;
+			p->siguiente = p->siguiente->siguiente;
+			delete(aux);
+			tam--;
+			return true;
+		}
+	}
 	return false;
 }
 
 template<class T>
 bool List<T>::pop(T & x)
-{
-	return false;
+{	
+	link aux = primero;
+	while (aux->siguiente) {
+		aux = aux->siguiente;
+	}
+	x = aux->siguiente->elemento;
+	delete(aux->siguiente);
+	aux->siguiente = NULL;
+	return true;
 }
 
 template<class T>
@@ -126,18 +157,32 @@ bool List<T>::pop_back(T & x)
 template<class T>
 bool List<T>::get(int pos, T & element)
 {
+	if (!primero) {
+		return false;
+	}
+	link aux = primero;
+	while (aux && pos > 0) {
+		aux = aux->siguiente;
+	}
+	element = aux->elemento;
 	return false;
 }
 
 template<class T>
 bool List<T>::get_front(T & element)
 {
+	element = primero->elemento;
 	return false;
 }
 
 template<class T>
 bool List<T>::get_back(T & element)
 {
+	link aux = primero;
+	while (aux) {
+		aux = aux->siguiente;
+	}
+	element = aux->elemento;
 	return false;
 }
 
