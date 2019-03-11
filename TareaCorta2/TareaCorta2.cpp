@@ -4,11 +4,11 @@
 #include "pch.h"
 #include <iostream>
 #include "ListaSimple.h"
-
+#include "ListB.h"
 int main() {
-
+	/*
 	List<int> lm("Lista1");
-
+	
 	lm.push_front(30);
 	lm.push_front(20);
 	lm.push_front(10);
@@ -25,6 +25,22 @@ int main() {
 	la.push_back("juan");
 	la.print();
 	std::cout << "\n";
+	*/
+	ListB<int,3> lm("Lista1");
+	lm.insertar(5);
+	lm.insertar(6);
+	lm.insertar(7);
+	lm.insertar(8);
+	lm.insertar(9);
+	lm.push_back(10);
+	lm.push_front(4);
+	lm.print();
+	int m;
+	lm.pop(m);
+	cout << m << endl;
+	lm.print();
+	lm.insertar(10);
+	lm.print();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

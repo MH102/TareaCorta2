@@ -1,8 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
-using std::string;
-using std::cout;
+using namespace std;
 
 template <class T>
 class List {
@@ -109,16 +108,17 @@ template<class T>
 bool List<T>::remove(int pos, T & x)
 {
 	if (tam==0) {
-		return;
+		return false;
 	}
 	else {
 		link p;
-		if (pos == 0)
+		if (pos == 0) {
 			p = primero;
 			primero = primero->siguiente;
 			delete(p);
 			tam--;
 			return true;
+		}
 		else {
 			p = primero;
 			while (p->siguiente && pos > 1) {
@@ -142,9 +142,8 @@ bool List<T>::pop(T & x)
 	while (aux->siguiente) {
 		aux = aux->siguiente;
 	}
-	x = aux->siguiente->elemento;
-	delete(aux->siguiente);
-	aux->siguiente = NULL;
+	x = aux->elemento;
+	delete(aux);
 	return true;
 }
 
