@@ -21,6 +21,59 @@ private:
 	int tam;			// Cantidad de elementos de la lista
 	string nombreLista;	// Nombre de la lista
 
+	void shiftRight(link p, int pos) {
+		T elem = p->elemento[pos];
+		T elem2;
+		for (int i = pos+1; i < p->tamano;i++) {
+			elem2 = p->elemento[i];
+			p->elemento[i] = elem;
+			elem = elem2;
+		}
+		p = p->siguiente;
+		while (p) {
+			for (int i = 0; i < p->tamano;i++) {
+				elem2 = p->elemento[i];
+				p->elemento[i] = elem;
+				elem = elem2;
+			}
+			p = p->siguiente;
+		}
+		push_back(elem);
+	}
+	int contarElementos() {
+		link p = primero;
+		int resultado = 0;
+		while (p) {
+			resultado += p->tamano;
+			p = p->siguiente;
+		}
+		return resultado;
+	}
+	void shiftLeft(link p, int pos) {
+		link aux = p;
+		while (p->siguiente) {
+			if (pos + 1 == p->tamano) {
+				p->elemento[pos] = p->siguiente->elemento[0];
+				p = p->siguiente;
+				pos = 0;
+			}
+			else {
+				p->elemento[pos] = p->elemento[pos + 1];
+				pos++;
+			}
+		}
+		for (int i = 0; i < p->tamano; i++) {
+			p->elemento[i] = p->elemento[i + 1];
+		}
+		while (aux->siguiente != p) {
+			aux = aux->siguiente;
+		}
+		p->tamano--;
+		if (aux->siguiente->tamano == 0) {
+			aux->siguiente = nullptr;
+			delete(p);
+		}
+	}
 
 public:
 
@@ -28,7 +81,7 @@ public:
 	int len();
 	void push_front(T x);
 	void push_back(T x);
-	void insertar(T x);
+	void insertar(int pos, T x);
 	bool remove(int pos, T& x);
 	bool pop(T& x);
 	bool pop_back(T& x);
@@ -77,8 +130,10 @@ void ListB<T, N>::push_front(T x) {
 
 template<class T, int N>
 void ListB<T, N>::push_back(T x) {
-	if (!primero)
+	if (!primero) {
 		primero = new Nodo(x, primero);
+		tam++;
+	}
 	else {
 		link p;
 		for (p = primero; p->siguiente; p = p->siguiente) {}
@@ -88,33 +143,33 @@ void ListB<T, N>::push_back(T x) {
 		}
 		else {
 			p->siguiente = new Nodo(x);
+			tam++;
 		}
 	}
 }
 
 template<class T, int N>
-void ListB<T, N>::insertar(T x) {
+void ListB<T, N>::insertar(int pos, T x) {
 	if (!primero) {
 		primero = new Nodo(x);
 		tam++;
 	}
 	else {
-		if (primero->tamano < primero->maxSize) {
-				primero->elemento[primero->tamano] = x;
-				primero->tamano++;
+		if (pos==0) {
+			push_front(x);
 		}
 		else {
-			link p = primero;
-			while (p->siguiente) {
-				p = p->siguiente;
-			}
-			if (p->tamano < p->maxSize) {
-				p->elemento[p->tamano] = x;
-				p->tamano++;
+			if (pos > contarElementos() - 1) {
+				push_back(x);
 			}
 			else {
-				p->siguiente = new Nodo(x);
-				tam++;
+				link p = primero;
+				while (p->tamano < pos + 1) {
+					pos -= p->tamano;
+					p = p->siguiente;
+				}
+				shiftRight(p, pos);
+				p->elemento[pos] = x;
 			}
 		}
 	}
@@ -122,50 +177,60 @@ void ListB<T, N>::insertar(T x) {
 template<class T, int N>
 bool ListB<T, N>::remove(int pos, T & x)
 {
-	if (tam == 0) {
+	if (!primero) {
 		return false;
 	}
 	else {
-		link p;
-		if (pos == 0) {
-			p = primero;
-			primero = primero->siguiente;
-			delete(p);
-			tam--;
-			return true;
+		if (pos > contarElementos() - 1) {
+			int m;
+			pop_back(m);
 		}
 		else {
-			p = primero;
-			while (p->siguiente && pos > 1) {
+			link p = primero;
+			while (p->tamano < pos + 1) {
+				pos -= p->tamano;
 				p = p->siguiente;
-				pos--;
 			}
-			link aux = p->siguiente;
-			p->siguiente = p->siguiente->siguiente;
-			delete(aux);
-			tam--;
+			x = p->elemento[pos];
+			shiftLeft(p, pos);
 			return true;
 		}
 	}
-	return false;
 }
 
 template<class T, int N>
 bool ListB<T, N>::pop(T & x)
 {
-	link aux = primero;
-	while (aux->siguiente) {
-		aux = aux->siguiente;
+	if (!primero) {
+		return false;
 	}
-	aux->tamano--;
-	x = aux->elemento[aux->tamano];
+	link p = primero;
+	x = p->elemento[0];
+	shiftLeft(p, 0);
 	return true;
 }
 
 template<class T, int N>
 bool ListB<T, N>::pop_back(T & x)
 {
-	return false;
+	if (!primero) {
+		return false;
+	}
+	link aux = primero;
+	link p = primero;
+	while (aux->siguiente) {
+		aux = aux->siguiente;
+	}
+	while (p->siguiente != aux) {
+		p = p->siguiente;
+	}
+	aux->tamano--;
+	x = aux->elemento[aux->tamano];
+	if (aux->tamano == 0) {
+		delete(aux);
+		p->siguiente = nullptr;
+	}
+	return true;
 }
 
 template<class T, int N>
@@ -175,34 +240,49 @@ bool ListB<T, N>::get(int pos, T & element)
 		return false;
 	}
 	link aux = primero;
-	while (aux && pos > 0) {
+	if (pos > contarElementos() - 1) {
+		get_back(element);
+		return true;
+	}
+	if (pos == 0) {
+		get_front(element);
+		return true;
+	}
+	while (pos + 1 > aux->tamano) {
+		pos -= aux->tamano;
 		aux = aux->siguiente;
 	}
-	element = aux->elemento;
-	return false;
+	element = aux->elemento[pos];
+	return true;
 }
 
 template<class T, int N>
 bool ListB<T, N>::get_front(T & element)
 {
-	element = primero->elemento;
-	return false;
+	if (!primero) {
+		return false;
+	}
+	element = primero->elemento[0];
+	return true;
 }
 
 template<class T, int N>
 bool ListB<T, N>::get_back(T & element)
 {
+	if (!primero) {
+		return false;
+	}
 	link aux = primero;
-	while (aux) {
+	while (aux->siguiente) {
 		aux = aux->siguiente;
 	}
-	element = aux->elemento;
-	return false;
+	element = aux->elemento[aux->tamano-1];
+	return true;
 }
 
 template<class T, int N>
 void ListB<T,N>::print() {
-	cout << nombreLista << endl;
+	cout << "--------" << nombreLista << "--------" << endl;
 	if (primero) {
 		link p = primero;
 		while (p) {
@@ -222,11 +302,12 @@ void ListB<T,N>::print() {
 			p = p->siguiente;
 		}
 	}
+	cout << "-----Fin de Lista-----" << endl;
 }
 
 template<class T, int N>
 int ListB<T,N>::len() {
-	return tam;
+	return contarElementos();
 }
 
 template<class T, int N>

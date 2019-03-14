@@ -126,6 +126,7 @@ bool List<T>::remove(int pos, T & x)
 				pos--;
 			}
 			link aux = p->siguiente;
+			x = p->siguiente->elemento;
 			p->siguiente = p->siguiente->siguiente;
 			delete(aux);
 			tam--;
@@ -137,12 +138,13 @@ bool List<T>::remove(int pos, T & x)
 
 template<class T>
 bool List<T>::pop(T & x)
-{	
+{
+	if (!primero)
+		return false;
 	link aux = primero;
-	while (aux->siguiente) {
-		aux = aux->siguiente;
-	}
+	primero = aux->siguiente;
 	x = aux->elemento;
+	tam--;
 	delete(aux);
 	return true;
 }
@@ -150,7 +152,22 @@ bool List<T>::pop(T & x)
 template<class T>
 bool List<T>::pop_back(T & x)
 {
-	return false;
+	if (!primero) {
+		return false;
+	}
+	link aux = primero;
+	link p = primero;
+	while (aux->siguiente) {
+		aux = aux->siguiente;
+	}
+	while (p->siguiente != aux) {
+		p = p->siguiente;
+	}
+	x = aux->elemento;
+	delete(aux);
+	p->siguiente = nullptr;
+	tam--;
+	return true;
 }
 
 template<class T>
@@ -160,8 +177,9 @@ bool List<T>::get(int pos, T & element)
 		return false;
 	}
 	link aux = primero;
-	while (aux && pos > 0) {
+	while (aux->siguiente && pos > 0) {
 		aux = aux->siguiente;
+		pos--;
 	}
 	element = aux->elemento;
 	return false;
@@ -178,7 +196,7 @@ template<class T>
 bool List<T>::get_back(T & element)
 {
 	link aux = primero;
-	while (aux) {
+	while (aux->siguiente) {
 		aux = aux->siguiente;
 	}
 	element = aux->elemento;
@@ -197,7 +215,7 @@ void List<T>::print() {
 			p = p->siguiente;
 		}
 	}
-	cout << "]";
+	cout << "]" << endl;
 }
 
 template<class T>

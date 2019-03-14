@@ -6,7 +6,7 @@
 #include "ListaSimple.h"
 #include "ListB.h"
 int main() {
-	/*
+	int n;
 	List<int> lm("Lista1");
 	
 	lm.push_front(30);
@@ -19,28 +19,62 @@ int main() {
 	lm.insertarR(50, 99);
 	lm.insertarR(999, 1);
 	lm.print();
-	std::cout << "\n";
 	List<string> la("Personas");
 	la.push_back("ana");
 	la.push_back("juan");
 	la.print();
-	std::cout << "\n";
-	*/
-	ListB<int,3> lm("Lista1");
-	lm.insertar(5);
-	lm.insertar(6);
-	lm.insertar(7);
-	lm.insertar(8);
-	lm.insertar(9);
-	lm.push_back(10);
-	lm.push_front(4);
+	lm.get(3, n);
+	cout << "Get Pos 3: " << n << endl;
+	lm.get_front(n);
+	cout << "Get Front: " << n << endl;
+	lm.get_back(n);
+	cout << "Get Back: " << n << endl;
+	lm.pop(n);
+	cout << "Pop: " << n << endl;
 	lm.print();
+	lm.pop_back(n);
+	cout << "Pop Back: " << n << endl;
+	lm.print();
+	lm.remove(5, n);
+	cout << "Remove Pos 5: " << n << endl;
+	lm.print();
+	/*
+	ListB<int,3> lm2("Lista1");
+
+	lm2.push_back(2);
+	lm2.push_back(3);
+	lm2.push_back(4);
+	lm2.push_back(5);
+	lm2.push_back(7);
+	lm2.push_back(8);
+	lm2.push_front(1);
+	lm2.insertar(5, 6);
+	lm2.insertar(99, 9);
+	lm2.insertar(4, 15);
+	lm2.print();
 	int m;
-	lm.pop(m);
-	cout << m << endl;
-	lm.print();
-	lm.insertar(10);
-	lm.print();
+	lm2.remove(4, m);
+	cout << "Remove Pos 4: " << m << endl;
+	lm2.print();
+	lm2.pop(m);
+	cout << "Pop: " << m << endl;
+	lm2.print();
+	lm2.pop(m);
+	cout << "Pop: " << m << endl;
+	lm2.print();
+	lm2.pop_back(m);
+	cout << "Pop Back: " << m << endl;
+	lm2.print();
+	lm2.pop_back(m);
+	cout << "Pop Back: " << m << endl;
+	lm2.print();
+	lm2.get(2, m);
+	cout << "Get Pos 2: " << m << endl;
+	lm2.get_back(m);
+	cout << "Get Back: " << m << endl;
+	lm2.get_front(m);
+	cout << "Get Front: " << m << endl;
+	*/
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
